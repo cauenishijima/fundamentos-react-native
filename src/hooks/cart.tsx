@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import { ScreenStackHeaderLeftView } from 'react-native-screens';
 
 interface Product {
   id: string;
@@ -35,7 +36,7 @@ const CartProvider: React.FC = ({ children }) => {
       );
 
       if (productsFromStoage) {
-        setProducts(JSON.parse(productsFromStoage));
+        setProducts([...JSON.parse(productsFromStoage)]);
       }
     }
 
@@ -60,9 +61,11 @@ const CartProvider: React.FC = ({ children }) => {
 
   const decrement = useCallback(
     async id => {
-      const newProducts = products.map(p =>
+      let newProducts = products.map(p =>
         p.id === id ? { ...p, quantity: p.quantity - 1 } : p,
       );
+
+      newProducts = newProducts.filter(p => p.quantity > 0);
 
       setProducts(newProducts);
 
